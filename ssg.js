@@ -30,7 +30,7 @@
           btn.click();
           clicked=true;
           log("🎯 Złapano slot!");
-          alert("🎉 Złapano slot!");
+          alert("🍂 Złapano slot!");
           active=false;
           return;
         }
@@ -38,7 +38,7 @@
     }
 
     if(!clicked){
-      log("❌ Brak slotu – próba ponownie za "+delay/1000+"s");
+      log("🍁 Brak slotu – próba ponownie za "+delay/1000+"s");
       const refreshBtn=document.querySelector("i.fas.fa-sync")?.parentElement;
       if(refreshBtn){
         refreshBtn.click();
@@ -60,7 +60,19 @@
     if(document.getElementById("slotGUI")) return;
     const d=document.createElement("div");
     d.id="slotGUI";
-    d.style="position:fixed;top:10px;right:10px;background:white;z-index:9999;border:1px solid #ccc;padding:10px;font-family:sans-serif;box-shadow:0 0 10px rgba(0,0,0,0.3)";
+    d.style=`
+      position:fixed;
+      top:10px;right:10px;
+      background:linear-gradient(145deg, #fff4e0, #fbe5c0);
+      z-index:9999;
+      border:2px solid #d9a066;
+      padding:12px;
+      font-family:Arial,sans-serif;
+      border-radius:10px;
+      box-shadow:0 0 12px rgba(180,120,50,0.4);
+      color:#4b2e15;
+      width:220px;
+    `;
 
     const delayOptions=Array.from({length:15},(_,i)=>{
       const ms=(i+1)*1000;
@@ -68,9 +80,9 @@
     }).join("");
 
     d.innerHTML=`
-      <b>AutoSlot</b><br>
-      Godzina:<br>
-      <select id="slotTime">
+      <b style="font-size:16px;color:#6b3e26;">🍯 AutoSlot</b><br><br>
+      <div style="font-size:14px;">Przedział godzin:</div>
+      <select id="slotTime" style="width:100%;padding:5px;margin:5px 0;border:1px solid #d9a066;border-radius:5px;background:#fff7eb;color:#4b2e15;">
         <option>00:30-02:30</option>
         <option>02:30-04:30</option>
         <option>04:30-06:30</option>
@@ -84,11 +96,16 @@
         <option>20:30-22:30</option>
         <option>22:30-00:30</option>
       </select><br>
-      Opóźnienie:<br>
-      <select id="slotDelay">${delayOptions}</select><br>
-      <button id="slotStart">Start</button> 
-      <button id="slotStop">Stop</button>
-      <div id="slotStatus" style="margin-top:5px;font-size:12px;color:#888;">Gotowy</div>
+
+      <div style="font-size:14px;">Opóźnienie:</div>
+      <select id="slotDelay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #d9a066;border-radius:5px;background:#fff7eb;color:#4b2e15;">
+        ${delayOptions}
+      </select><br>
+
+      <button id="slotStart" style="width:48%;padding:6px;background:#d98c4b;color:white;border:none;border-radius:6px;cursor:pointer;margin-right:4%;box-shadow:0 0 5px rgba(217,140,75,0.5);">Start 🍂</button>
+      <button id="slotStop" style="width:48%;padding:6px;background:#8c5a44;color:white;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 5px rgba(140,90,68,0.5);">Stop 🍁</button>
+
+      <div id="slotStatus" style="margin-top:8px;font-size:12px;color:#6b3e26;">🍯 Status: Gotowy</div>
     `;
 
     document.body.appendChild(d);
