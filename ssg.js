@@ -88,7 +88,7 @@
     }).join("");
 
     d.innerHTML=`
-      <b style="font-size:16px;color:#003366;">⚓ AutoSlot Port</b><br><br>
+      <b style="font-size:16px;color:#003366;">⚓ Slot Sniper Port GCT</b><br><br>
 
       <div style="font-size:14px;">Przedział godzin:</div>
       <select id="slotTime" style="width:100%;padding:5px;margin:5px 0;border:1px solid #607d8b;border-radius:5px;background:#f0f8ff;color:#003366;">
