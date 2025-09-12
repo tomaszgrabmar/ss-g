@@ -2,20 +2,28 @@
   let active=false;
   let selected="10:30-12:30";
   let delay=1000;
+  let targetDay="today"; // "today" lub "tomorrow"
 
   function log(t){
     console.log("[AutoSlot]",t);
     document.getElementById("slotStatus").innerText=t;
   }
 
+  function getTargetDate(){
+    const now = new Date();
+    if(targetDay === "tomorrow") now.setDate(now.getDate() + 1);
+    return now.toISOString().split("T")[0];
+  }
+
   function runCycle(){
     if(!active) return;
-    const now=new Date();
-    const today=now.toISOString().split("T")[0];
-    const [h1,h2]=selected.split("-");
-    const expectedStart=`${today} ${h1}`;
-    const expectedEnd=`${today} ${h2}`;
-    const rows=document.querySelectorAll("table.q-table tbody tr");
+
+    const dateStr = getTargetDate();
+    const [h1,h2] = selected.split("-");
+    const expectedStart = `${dateStr} ${h1}`;
+    const expectedEnd   = `${dateStr} ${h2}`;
+
+    const rows = document.querySelectorAll("table.q-table tbody tr");
     let clicked=false;
 
     for(const row of rows){
@@ -80,7 +88,8 @@
     }).join("");
 
     d.innerHTML=`
-      <b style="font-size:16px;color:#003366;">⚓ Slot Sniper Port GCT</b><br><br>
+      <b style="font-size:16px;color:#003366;">⚓ AutoSlot Port</b><br><br>
+
       <div style="font-size:14px;">Przedział godzin:</div>
       <select id="slotTime" style="width:100%;padding:5px;margin:5px 0;border:1px solid #607d8b;border-radius:5px;background:#f0f8ff;color:#003366;">
         <option>00:30-02:30</option>
@@ -102,6 +111,12 @@
         ${delayOptions}
       </select><br>
 
+      <div style="font-size:14px;">📅 Data:</div>
+      <select id="slotDay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #607d8b;border-radius:5px;background:#f0f8ff;color:#003366;">
+        <option value="today" selected>Dzisiaj</option>
+        <option value="tomorrow">Jutro</option>
+      </select><br>
+
       <button id="slotStart" style="width:48%;padding:6px;background:#1565c0;color:white;border:none;border-radius:6px;cursor:pointer;margin-right:4%;box-shadow:0 0 5px rgba(21,101,192,0.5);">Start 🚢</button>
       <button id="slotStop" style="width:48%;padding:6px;background:#c62828;color:white;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 5px rgba(198,40,40,0.5);">Stop 🛑</button>
 
@@ -113,6 +128,7 @@
     document.getElementById("slotStart").onclick=()=>{
       selected=document.getElementById("slotTime").value;
       delay=parseInt(document.getElementById("slotDelay").value);
+      targetDay=document.getElementById("slotDay").value;
       active=true;
       log("🔄 Startuję cykl...");
       runCycle();
