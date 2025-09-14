@@ -1,6 +1,6 @@
 (function(){
   let active=false;
-  let selected="10:30-12:30";
+  let selected="18:30-20:30";
   let delay=1000;
   let targetDay="today"; // "today" lub "tomorrow"
 
