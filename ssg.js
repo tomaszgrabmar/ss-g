@@ -1,11 +1,11 @@
 (function(){
   let active=false;
-  let selected="18:30-20:30";
+  let selectedRanges=[];
   let delay=1000;
   let targetDay="today"; // "today" lub "tomorrow"
 
   function log(t){
-    console.log("[AutoSlot]",t);
+    console.log("[BHub Clicker]",t);
     document.getElementById("slotStatus").innerText=t;
   }
 
@@ -19,10 +19,6 @@
     if(!active) return;
 
     const dateStr = getTargetDate();
-    const [h1,h2] = selected.split("-");
-    const expectedStart = `${dateStr} ${h1}`;
-    const expectedEnd   = `${dateStr} ${h2}`;
-
     const rows = document.querySelectorAll("table.q-table tbody tr");
     let clicked=false;
 
@@ -32,21 +28,26 @@
       const s=tds[3].innerText.trim();
       const e=tds[4].innerText.trim();
 
-      if(s===expectedStart && e===expectedEnd){
-        const btn=row.querySelector("button");
-        if(btn){
-          btn.click();
-          clicked=true;
-          log("🚢 Złapano slot!");
-          alert("⚓ Złapano slot!");
-          active=false;
-          return;
+      for(const range of selectedRanges){
+        const [h1,h2]=range.split("-");
+        const expectedStart=`${dateStr} ${h1}`;
+        const expectedEnd=`${dateStr} ${h2}`;
+        if(s===expectedStart && e===expectedEnd){
+          const btn=row.querySelector("button");
+          if(btn){
+            btn.click();
+            clicked=true;
+            log("⚡ Złapano slot!");
+            alert("🕶️ Slot przechwycony!");
+            active=false;
+            return;
+          }
         }
       }
     }
 
     if(!clicked){
-      log("🌊 Brak slotu – próba ponownie za "+delay/1000+"s");
+      log("💾 Brak slotu – próba ponownie za "+delay/1000+"s");
       const refreshBtn=document.querySelector("i.fas.fa-sync")?.parentElement;
       if(refreshBtn){
         refreshBtn.click();
@@ -71,16 +72,28 @@
     d.style=`
       position:fixed;
       top:10px;right:10px;
-      background:linear-gradient(145deg, #e6f3ff, #cfd8dc);
+      background:#0d0d0d;
       z-index:9999;
-      border:2px solid #607d8b;
-      padding:12px;
-      font-family:Arial,sans-serif;
-      border-radius:10px;
-      box-shadow:0 0 12px rgba(0,50,100,0.3);
-      color:#1a3c57;
-      width:230px;
+      border:2px solid #fcee09;
+      padding:14px;
+      font-family:'Courier New', monospace;
+      border-radius:8px;
+      box-shadow:0 0 15px rgba(252,238,9,0.7);
+      color:#fcee09;
+      width:260px;
     `;
+
+    const timeSlots=[
+      "00:30-02:30","02:30-04:30","04:30-06:30","06:30-08:30",
+      "08:30-10:30","10:30-12:30","12:30-14:30","14:30-16:30",
+      "16:30-18:30","18:30-20:30","20:30-22:30","22:30-00:30"
+    ];
+
+    const checkboxHTML=timeSlots.map(slot=>
+      `<label style="display:block;margin:3px 0;color:#00fff7;">
+         <input type="checkbox" class="slotTimeCheck" value="${slot}" style="margin-right:6px;"> ${slot}
+       </label>`
+    ).join("");
 
     const delayOptions=Array.from({length:15},(_,i)=>{
       const ms=(i+1)*1000;
@@ -88,45 +101,39 @@
     }).join("");
 
     d.innerHTML=`
-      <b style="font-size:16px;color:#003366;">⚓ Slot Sniper Port GCT!</b><br><br>
+      <b style="font-size:16px;color:#fcee09;">💀 BHub Clicker 2077</b><br><br>
 
-      <div style="font-size:14px;">Przedział godzin:</div>
-      <select id="slotTime" style="width:100%;padding:5px;margin:5px 0;border:1px solid #607d8b;border-radius:5px;background:#f0f8ff;color:#003366;">
-        <option>00:30-02:30</option>
-        <option>02:30-04:30</option>
-        <option>04:30-06:30</option>
-        <option>06:30-08:30</option>
-        <option>08:30-10:30</option>
-        <option>10:30-12:30</option>
-        <option>12:30-14:30</option>
-        <option>14:30-16:30</option>
-        <option>16:30-18:30</option>
-        <option selected>18:30-20:30</option>
-        <option>20:30-22:30</option>
-        <option>22:30-00:30</option>
-      </select><br>
+      <div style="font-size:13px;color:#00fff7;">Przedziały czasowe:</div>
+      <div style="max-height:120px;overflow-y:auto;margin-bottom:6px;padding-right:5px;">
+        ${checkboxHTML}
+      </div>
 
-      <div style="font-size:14px;">Opóźnienie:</div>
-      <select id="slotDelay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #607d8b;border-radius:5px;background:#f0f8ff;color:#003366;">
+      <div style="font-size:13px;color:#00fff7;">Opóźnienie:</div>
+      <select id="slotDelay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #fcee09;background:#1a1a1a;color:#fcee09;border-radius:5px;">
         ${delayOptions}
-      </select><br>
+      </select>
 
-      <div style="font-size:14px;">📅 Data:</div>
-      <select id="slotDay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #607d8b;border-radius:5px;background:#f0f8ff;color:#003366;">
+      <div style="font-size:13px;color:#00fff7;">📅 Data:</div>
+      <select id="slotDay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #fcee09;background:#1a1a1a;color:#fcee09;border-radius:5px;">
         <option value="today" selected>Dzisiaj</option>
         <option value="tomorrow">Jutro</option>
-      </select><br>
+      </select>
 
-      <button id="slotStart" style="width:48%;padding:6px;background:#1565c0;color:white;border:none;border-radius:6px;cursor:pointer;margin-right:4%;box-shadow:0 0 5px rgba(21,101,192,0.5);">Start 🚢</button>
-      <button id="slotStop" style="width:48%;padding:6px;background:#c62828;color:white;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 5px rgba(198,40,40,0.5);">Stop 🛑</button>
+      <button id="slotStart" style="width:48%;padding:6px;background:#fcee09;color:#0d0d0d;border:none;border-radius:6px;cursor:pointer;margin-right:4%;box-shadow:0 0 10px #fcee09;font-weight:bold;">START ⚡</button>
+      <button id="slotStop" style="width:48%;padding:6px;background:#ff0077;color:white;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 10px #ff0077;font-weight:bold;">STOP 💀</button>
 
-      <div id="slotStatus" style="margin-top:8px;font-size:12px;color:#003366;">⚓ Status: Gotowy</div>
+      <div id="slotStatus" style="margin-top:8px;font-size:12px;color:#00fff7;">⚡ Status: Gotowy</div>
     `;
 
     document.body.appendChild(d);
 
     document.getElementById("slotStart").onclick=()=>{
-      selected=document.getElementById("slotTime").value;
+      const selectedChecks=Array.from(document.querySelectorAll(".slotTimeCheck")).filter(c=>c.checked);
+      if(selectedChecks.length===0){
+        alert("⚠️ Wybierz przynajmniej jeden przedział czasowy.");
+        return;
+      }
+      selectedRanges=selectedChecks.map(c=>c.value);
       delay=parseInt(document.getElementById("slotDelay").value);
       targetDay=document.getElementById("slotDay").value;
       active=true;
