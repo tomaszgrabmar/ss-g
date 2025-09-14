@@ -1,11 +1,11 @@
 (function(){
   let active=false;
-  let selectedRanges=[];
+  let selectedStarts=[]; // tylko początkowe godziny
   let delay=1000;
   let targetDay="today"; // "today" lub "tomorrow"
 
   function log(t){
-    console.log("[BHub Clicker]",t);
+    console.log("[GCT Clicker]",t);
     document.getElementById("slotStatus").innerText=t;
   }
 
@@ -25,20 +25,17 @@
     for(const row of rows){
       const tds=row.querySelectorAll("td");
       if(tds.length<5) continue;
-      const s=tds[3].innerText.trim();
-      const e=tds[4].innerText.trim();
+      const s=tds[3].innerText.trim(); // początek slotu (pełna data)
 
-      for(const range of selectedRanges){
-        const [h1,h2]=range.split("-");
-        const expectedStart=`${dateStr} ${h1}`;
-        const expectedEnd=`${dateStr} ${h2}`;
-        if(s===expectedStart && e===expectedEnd){
+      for(const startHour of selectedStarts){
+        const expectedStart=`${dateStr} ${startHour}`;
+        if(s===expectedStart){
           const btn=row.querySelector("button");
           if(btn){
             btn.click();
             clicked=true;
-            log("⚡ Złapano slot!");
-            alert("🕶️ Slot przechwycony!");
+            log(`⚡ Złapano slot od ${startHour}!`);
+            alert(`🕶️ Slot przechwycony od ${startHour}!`);
             active=false;
             return;
           }
@@ -83,15 +80,15 @@
       width:260px;
     `;
 
-    const timeSlots=[
-      "00:30-02:30","02:30-04:30","04:30-06:30","06:30-08:30",
-      "08:30-10:30","10:30-12:30","12:30-14:30","14:30-16:30",
-      "16:30-18:30","18:30-20:30","20:30-22:30","22:30-00:30"
+    const startSlots=[
+      "00:30","02:30","04:30","06:30",
+      "08:30","10:30","12:30","14:30",
+      "16:30","18:30","20:30","22:30"
     ];
 
-    const checkboxHTML=timeSlots.map(slot=>
+    const checkboxHTML=startSlots.map(start=>
       `<label style="display:block;margin:3px 0;color:#00fff7;">
-         <input type="checkbox" class="slotTimeCheck" value="${slot}" style="margin-right:6px;"> ${slot}
+         <input type="checkbox" class="slotStartCheck" value="${start}" style="margin-right:6px;"> ${start}
        </label>`
     ).join("");
 
@@ -101,9 +98,9 @@
     }).join("");
 
     d.innerHTML=`
-      <b style="font-size:16px;color:#fcee09;">💀 BHub Clicker 2077</b><br><br>
+      <b style="font-size:16px;color:#fcee09;">💀 GCT Clicker 2077</b><br><br>
 
-      <div style="font-size:13px;color:#00fff7;">Przedziały czasowe:</div>
+      <div style="font-size:13px;color:#00fff7;">Godziny początkowe:</div>
       <div style="max-height:120px;overflow-y:auto;margin-bottom:6px;padding-right:5px;">
         ${checkboxHTML}
       </div>
@@ -128,12 +125,12 @@
     document.body.appendChild(d);
 
     document.getElementById("slotStart").onclick=()=>{
-      const selectedChecks=Array.from(document.querySelectorAll(".slotTimeCheck")).filter(c=>c.checked);
+      const selectedChecks=Array.from(document.querySelectorAll(".slotStartCheck")).filter(c=>c.checked);
       if(selectedChecks.length===0){
-        alert("⚠️ Wybierz przynajmniej jeden przedział czasowy.");
+        alert("⚠️ Wybierz przynajmniej jedną godzinę początkową.");
         return;
       }
-      selectedRanges=selectedChecks.map(c=>c.value);
+      selectedStarts=selectedChecks.map(c=>c.value);
       delay=parseInt(document.getElementById("slotDelay").value);
       targetDay=document.getElementById("slotDay").value;
       active=true;
