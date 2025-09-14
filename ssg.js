@@ -97,11 +97,11 @@
         <option>04:30-06:30</option>
         <option>06:30-08:30</option>
         <option>08:30-10:30</option>
-        <option selected>10:30-12:30</option>
+        <option>10:30-12:30</option>
         <option>12:30-14:30</option>
         <option>14:30-16:30</option>
         <option>16:30-18:30</option>
-        <option>18:30-20:30</option>
+        <option selected>18:30-20:30</option>
         <option>20:30-22:30</option>
         <option>22:30-00:30</option>
       </select><br>
