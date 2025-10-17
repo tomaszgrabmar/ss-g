@@ -5,7 +5,7 @@
   let targetDay="today"; // "today" lub "tomorrow"
 
   function log(t){
-    console.log("[GCT Halloween Clicker]",t);
+    console.log("[GCT Summer Clicker]",t);
     const el=document.getElementById("slotStatus");
     if(el) el.innerText=t;
   }
@@ -26,7 +26,7 @@
     for(const row of rows){
       const tds=row.querySelectorAll("td");
       if(tds.length<5) continue;
-      const s=tds[3].innerText.trim(); // początek slotu
+      const s=tds[3].innerText.trim();
 
       for(const startHour of selectedStarts){
         const expectedStart=`${dateStr} ${startHour}`;
@@ -35,8 +35,8 @@
           if(btn){
             btn.click();
             clicked=true;
-            log(`🎃 Złapano slot od ${startHour}!`);
-            alert(`👻 Slot przechwycony od ${startHour}!`);
+            log(`☀️ Złapano slot od ${startHour}!`);
+            alert(`⛱️ Slot przechwycony od ${startHour}!`);
             active=false;
             return;
           }
@@ -45,7 +45,7 @@
     }
 
     if(!clicked){
-      log("🕸️ Brak slotu – próba ponownie za "+delay/1000+"s");
+      log("🏖️ Brak slotu – ponowna próba za "+delay/1000+"s");
       const refreshBtn=document.querySelector("i.fas.fa-sync")?.parentElement;
       if(refreshBtn){
         refreshBtn.click();
@@ -71,16 +71,16 @@
     d.style=`
       position:fixed;
       top:10px;right:10px;
-      background:linear-gradient(145deg,#1c0f2e,#2b0033);
+      background:linear-gradient(135deg,#a8edea,#fed6e3);
       z-index:9999;
-      border:2px solid #ff7518;
+      border:2px solid #fbbf24;
       padding:14px;
       font-family:'Trebuchet MS', sans-serif;
       border-radius:10px;
-      box-shadow:0 0 20px rgba(255,117,24,0.7);
-      color:#ffb347;
+      box-shadow:0 0 20px rgba(0,191,255,0.7);
+      color:#005f73;
       width:260px;
-      text-shadow:0 0 4px black;
+      text-shadow:0 0 3px #ffffff;
     `;
 
     const startSlots=[
@@ -90,8 +90,8 @@
     ];
 
     const checkboxHTML=startSlots.map(start=>
-      `<label style="display:block;margin:3px 0;color:#ffb347;">
-         <input type="checkbox" class="slotStartCheck" value="${start}" style="margin-right:6px;"> 🎃 ${start}
+      `<label style="display:block;margin:3px 0;color:#006d77;">
+         <input type="checkbox" class="slotStartCheck" value="${start}" style="margin-right:6px;"> ☀️ ${start}
        </label>`
     ).join("");
 
@@ -101,28 +101,32 @@
     }).join("");
 
     d.innerHTML=`
-      <b style="font-size:16px;color:#ff7518;">👻 GCT Halloween Clicker</b><br><br>
+      <b style="font-size:16px;color:#005f73;">✨ GCT Summer Clicker ✨</b><br><br>
 
-      <div style="font-size:13px;">Godziny początkowe:</div>
+      <div style="font-size:13px;color:#006d77;">Godziny początkowe:</div>
       <div style="max-height:120px;overflow-y:auto;margin-bottom:6px;padding-right:5px;">
         ${checkboxHTML}
       </div>
 
-      <div style="font-size:13px;">Opóźnienie:</div>
-      <select id="slotDelay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #ff7518;background:#2b0033;color:#ffb347;border-radius:5px;">
+      <div style="font-size:13px;color:#006d77;">Opóźnienie:</div>
+      <select id="slotDelay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #fbbf24;background:#fefae0;color:#005f73;border-radius:5px;">
         ${delayOptions}
       </select>
 
-      <div style="font-size:13px;">📅 Data:</div>
-      <select id="slotDay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #ff7518;background:#2b0033;color:#ffb347;border-radius:5px;">
+      <div style="font-size:13px;color:#006d77;">🗓️ Data:</div>
+      <select id="slotDay" style="width:100%;padding:5px;margin:5px 0;border:1px solid #fbbf24;background:#fefae0;color:#005f73;border-radius:5px;">
         <option value="today" selected>Dzisiaj</option>
         <option value="tomorrow">Jutro</option>
       </select>
 
-      <button id="slotStart" style="width:48%;padding:6px;background:#ff7518;color:#2b0033;border:none;border-radius:6px;cursor:pointer;margin-right:4%;box-shadow:0 0 10px #ff7518;font-weight:bold;">START 🎃</button>
-      <button id="slotStop" style="width:48%;padding:6px;background:#6a0dad;color:#ffb347;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 10px #6a0dad;font-weight:bold;">STOP 💀</button>
+      <button id="slotStart" style="width:48%;padding:6px;background:#2ec4b6;color:#ffffff;border:none;border-radius:6px;cursor:pointer;margin-right:4%;box-shadow:0 0 10px #2ec4b6;font-weight:bold;">
+        START ☀️
+      </button>
+      <button id="slotStop" style="width:48%;padding:6px;background:#e63946;color:#ffffff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 10px #e63946;font-weight:bold;">
+        STOP ⛱️
+      </button>
 
-      <div id="slotStatus" style="margin-top:8px;font-size:12px;color:#ffb347;">🕷️ Status: Gotowy</div>
+      <div id="slotStatus" style="margin-top:8px;font-size:12px;color:#006d77;">🌿 Status: Gotowy</div>
     `;
 
     document.body.appendChild(d);
